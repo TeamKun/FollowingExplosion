@@ -1,0 +1,22 @@
+name: FollowingExplosion
+version: ${project.version}
+main: net.kunmc.lab.followingexplosion.FollowingExplosion
+api-version: 1.16
+authors: [ CANIS ]
+description: 爆発が迫ってくるプラグイン
+
+commands:
+  fe:
+    description: 爆発が迫ってくる
+    usage: |
+      /fe setPlayer <Player> 爆発対象プレイヤーを指定する。@a、@r可。
+      /fe removePlayer <Player> 爆発対象プレイヤーの指定を外す。@a可。
+      /fe mode assin 爆発対象プレイヤーを指定するモードに設定する。
+      /fe mode random 爆発対象プレイヤーが一定間隔ごとにランダムで設定されるモードに設定する。
+      /fe config display 各種config設定値の閲覧。
+      /fe config explosionPower <number> 爆発範囲を設定する。
+      /fe config explosionPeriod <number> 爆発間隔を設定する。
+      /fe config locationPeriod <number> 指定時間前の過去位置を爆発させる際の指定時間を設定する。
+      /fe config randomPersons <number> ランダム設定モードにおいて、一定間隔ごとに爆発対象としてランダムに設定されるプレイヤーの人数を設定する。
+      /fe config randomPeriod <number> ランダム設定モードにおいて、爆発対象プレイヤーがランダムに設定される際の間隔を設定する。
+    permission: op
