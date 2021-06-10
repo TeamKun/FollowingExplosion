@@ -94,6 +94,7 @@ public class CommandHandler implements CommandExecutor {
                 if (!Objects.isNull(randomTask)) {
                     randomTask.cancel();
                 }
+                LocationMap.clear();
                 switch (args[1]) {
                     case CommandConst.MODE_RANDOM:
                         Config.gameMode = CommandConst.MODE_RANDOM;
