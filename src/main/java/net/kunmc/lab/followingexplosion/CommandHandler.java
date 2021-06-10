@@ -66,7 +66,7 @@ public class CommandHandler implements CommandExecutor {
                                 LocationMap.putIfAbsent(id, Objects.requireNonNull(Bukkit.getPlayer(id)).getLocation());
                                 sender.sendMessage(Objects.requireNonNull(Bukkit.getPlayer(id)).getName() + "を追加しました。");
                             } else {
-                                sender.sendMessage("すでに追加されています。");
+                                sender.sendMessage("すでに追加されているプレイヤーです。");
                             }
                             break;
                     }
