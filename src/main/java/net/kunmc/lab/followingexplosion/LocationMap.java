@@ -20,11 +20,11 @@ public class LocationMap {
         return null;
     }
 
-    public static void put(UUID key, long period, Location location) {
+    public static void put(UUID key, long interval, Location location) {
         if (locationMap.containsKey(key)) {
             ArrayList<Location> array = locationMap.get(key);
             array.add(0, location);
-            if (array.size() > (int) period) array.remove(array.size() - 1);
+            while (array.size() > (int) interval) array.remove(array.size() - 1);
         } else {
             ArrayList<Location> array = new ArrayList<>();
             array.add(0, location);

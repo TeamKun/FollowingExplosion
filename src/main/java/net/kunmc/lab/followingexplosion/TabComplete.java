@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -38,15 +39,14 @@ public class TabComplete implements TabCompleter {
                 } else {
                     if (args[0].equals(CommandConst.COMMAND_PLAYER_SET)) {
                         completions.addAll(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList()));
-                        completions.removeIf(p -> LocationMap.containsKey(Bukkit.getPlayer(p).getUniqueId()));
+                        completions.removeIf(p -> LocationMap.containsKey(Objects.requireNonNull(Bukkit.getPlayer(p)).getUniqueId()));
                         completions.add(0, "@r");
-                        completions.add(0, "@a");
                     } else {
                         for (UUID key: LocationMap.keySet()){
-                            completions.add(Bukkit.getPlayer(key).getName());
+                            completions.add(Objects.requireNonNull(Bukkit.getPlayer(key)).getName());
                         }
-                        completions.add(0, "@a");
                     }
+                    completions.add(0, "@a");
 
                 }
                 break;

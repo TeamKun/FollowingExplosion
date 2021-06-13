@@ -6,31 +6,31 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Comparator;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static net.kunmc.lab.followingexplosion.FollowingExplosion.commandHandler;
 
 public class CommandHandler implements CommandExecutor {
-    private BukkitTask explosionTask;
-    private BukkitTask randomTask;
-    private Plugin plugin;
+    private Tasks task;
     private final Random random = new Random();
     UUID id;
 
     public void start() {
-        plugin = FollowingExplosion.plugin;
-        new Tasks("location").runTaskTimer(plugin, 0, 1L);
-        explosionTask = new Tasks("explosion").runTaskTimer(plugin, 0, Config.explosionInterval);
+        Plugin plugin = FollowingExplosion.plugin;
+        task = new Tasks();
+        task.runTaskTimer(plugin, 0, 1L);
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        plugin = FollowingExplosion.plugin;
         ArrayList<Player> allPlayers;
+        task = commandHandler.task;
 
         if (args.length < 2) {
             sender.sendMessage("引数が不足しています。");
@@ -61,12 +61,15 @@ public class CommandHandler implements CommandExecutor {
                             break;
 
                         default:
-                            id = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId();
-                            if (!LocationMap.containsKey(id)) {
-                                LocationMap.putIfAbsent(id, Objects.requireNonNull(Bukkit.getPlayer(id)).getLocation());
-                                sender.sendMessage(Objects.requireNonNull(Bukkit.getPlayer(id)).getName() + "を追加しました。");
-                            } else {
-                                sender.sendMessage("すでに追加されているプレイヤーです。");
+                            Player player = Bukkit.getPlayer(args[1]);
+                            if (player != null) {
+                                id = player.getUniqueId();
+                                if (!LocationMap.containsKey(id)) {
+                                    LocationMap.putIfAbsent(id, player.getLocation());
+                                    sender.sendMessage(player.getName() + "を追加しました。");
+                                } else {
+                                    sender.sendMessage("すでに追加されているプレイヤーです。");
+                                }
                             }
                             break;
                     }
@@ -81,9 +84,11 @@ public class CommandHandler implements CommandExecutor {
                         LocationMap.clear();
                         sender.sendMessage("全てのプレイヤーを削除しました。");
                     } else {
-                        id = Objects.requireNonNull(Bukkit.getPlayer(args[1])).getUniqueId();
-                        LocationMap.remove(id);
-                        sender.sendMessage(Objects.requireNonNull(Bukkit.getPlayer(id)).getName() + "を削除しました。");
+                        Player player = Bukkit.getPlayer(args[1]);
+                        if (player != null) {
+                            LocationMap.remove(player.getUniqueId());
+                            sender.sendMessage(player.getName() + "を削除しました。");
+                        }
                     }
                 } catch (Exception e) {
                     sender.sendMessage("存在しないプレイヤーを指定しています。");
@@ -91,14 +96,12 @@ public class CommandHandler implements CommandExecutor {
                 break;
 
             case CommandConst.COMMAND_MODE:
-                if (!Objects.isNull(randomTask)) {
-                    randomTask.cancel();
-                }
                 LocationMap.clear();
+                task.resetRandomTick();
                 switch (args[1]) {
                     case CommandConst.MODE_RANDOM:
                         Config.gameMode = CommandConst.MODE_RANDOM;
-                        randomTask = new Tasks("random").runTaskTimer(plugin, 0, Config.randomInterval);
+                        task.setRandomTick(Config.randomInterval);
                         sender.sendMessage("ランダムモードに設定しました。");
                         break;
 
@@ -116,6 +119,14 @@ public class CommandHandler implements CommandExecutor {
             case CommandConst.COMMAND_CONFIG:
                 if (args.length < 3) {
                     if (args[1].equals(CommandConst.CONFIG_DISPLAY)) {
+                        ArrayList<String> playerList = new ArrayList<>();
+                        for (UUID key : LocationMap.keySet()) {
+                            Player player = Bukkit.getPlayer(key);
+                            if (player != null) {
+                                playerList.add(player.getName());
+                            }
+                        }
+                        sender.sendMessage("対象プレイヤー：" + playerList.stream().sorted(Comparator.naturalOrder()).collect(Collectors.joining(",")));
                         sender.sendMessage("爆発範囲：" + Config.explosionPower);
                         sender.sendMessage("爆発間隔：" + Config.explosionInterval + "Tick");
                         sender.sendMessage("過去位置の時間：" + Config.locationInterval + "Tick前");
@@ -141,8 +152,7 @@ public class CommandHandler implements CommandExecutor {
 
                         case CommandConst.CONFIG_EXPLOSION_INTERVAL:
                             Config.explosionInterval = Long.parseLong(args[2]);
-                            explosionTask.cancel();
-                            explosionTask = new Tasks("explosion").runTaskTimer(plugin, 0, Config.explosionInterval);
+                            task.resetExplosionTick();
                             sender.sendMessage("爆発間隔：" + Config.explosionInterval + "Tick");
                             break;
 
@@ -152,20 +162,13 @@ public class CommandHandler implements CommandExecutor {
                             break;
 
                         case CommandConst.CONFIG_RANDOM_PERSONS:
-                            if (!Objects.isNull(randomTask))
-                                randomTask.cancel();
                             Config.randomPersons = Integer.parseInt(args[2]);
-                            if (Config.gameMode.equals(CommandConst.MODE_RANDOM))
-                                randomTask = new Tasks("random").runTaskTimer(plugin, 0, Config.randomInterval);
                             sender.sendMessage("ランダムモードのランダム設定人数：" + Config.randomPersons + "人");
                             break;
 
                         case CommandConst.CONFIG_RANDOM_INTERVAL:
-                            if (!Objects.isNull(randomTask))
-                                randomTask.cancel();
                             Config.randomInterval = Long.parseLong(args[2]);
-                            if (Config.gameMode.equals(CommandConst.MODE_RANDOM))
-                                randomTask = new Tasks("random").runTaskTimer(plugin, 0, Config.randomInterval);
+                            task.resetRandomTick();
                             sender.sendMessage("ランダムモードの設定間隔：" + Config.randomInterval + "Tick");
                             break;
 

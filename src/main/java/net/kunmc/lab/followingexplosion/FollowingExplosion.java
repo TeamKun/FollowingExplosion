@@ -2,18 +2,22 @@ package net.kunmc.lab.followingexplosion;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
+
 public final class FollowingExplosion extends JavaPlugin {
     public static FollowingExplosion plugin;
+    public static CommandHandler commandHandler;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         plugin = this;
 
-        getCommand(CommandConst.MAIN_COMMAND).setExecutor(new CommandHandler());
-        getCommand(CommandConst.MAIN_COMMAND).setTabCompleter(new TabComplete());
+        commandHandler = new CommandHandler();
+        commandHandler.start();
 
-        new CommandHandler().start();
+        Objects.requireNonNull(getCommand(CommandConst.MAIN_COMMAND)).setExecutor(new CommandHandler());
+        Objects.requireNonNull(getCommand(CommandConst.MAIN_COMMAND)).setTabCompleter(new TabComplete());
     }
 
     @Override
