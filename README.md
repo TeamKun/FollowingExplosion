@@ -14,11 +14,11 @@
         - random 爆発対象プレイヤーが一定間隔ごとにランダムで設定されるモードに設定する。
     - config
         - display 各種config設定値の閲覧。
-        - explosionPower <number> 爆発範囲を設定する。
-        - explosionInterval <number> 爆発間隔を設定する。
-        - locationInterval <number> 指定時間前の過去位置を爆発させる際の指定時間を設定する。
-        - randomPersons <number> ランダム設定モードにおいて、一定間隔ごとに爆発対象としてランダムに設定されるプレイヤーの人数を設定する。
-        - randomInterval <number> ランダム設定モードにおいて、爆発対象プレイヤーがランダムに設定される際の間隔を設定する。
+        - explosionPower <number> 爆発範囲を設定する。デフォルトは3。
+        - explosionInterval <number> 爆発間隔を設定する。デフォルトは30。
+        - locationInterval <number> 指定時間前の過去位置を爆発させる際の指定時間を設定する。デフォルトは100。
+        - randomPersons <number> ランダム設定モードにおいて、一定間隔ごとに爆発対象としてランダムに設定されるプレイヤーの人数を設定する。デフォルトは1。
+        - randomInterval <number> ランダム設定モードにおいて、爆発対象プレイヤーがランダムに設定される際の間隔を設定する。デフォルトは300。
     
 ## その他仕様
 - 現在指定されているプレイヤーには発光エフェクトが付与される。
