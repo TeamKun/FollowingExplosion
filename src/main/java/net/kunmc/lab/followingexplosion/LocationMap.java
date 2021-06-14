@@ -1,6 +1,8 @@
 package net.kunmc.lab.followingexplosion;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,19 +32,37 @@ public class LocationMap {
             array.add(0, location);
             locationMap.put(key, array);
         }
+        Player player = Bukkit.getPlayer(key);
+        if (player != null) {
+            player.setGlowing(true);
+        }
     }
 
     public static void putIfAbsent(UUID key, Location location) {
         ArrayList<Location> array = new ArrayList<>();
         array.add(0, location);
         locationMap.putIfAbsent(key, array);
+        Player player = Bukkit.getPlayer(key);
+        if (player != null) {
+            player.setGlowing(true);
+        }
     }
 
     public static void remove(UUID key) {
         locationMap.remove(key);
+        Player player = Bukkit.getPlayer(key);
+        if (player != null) {
+            player.setGlowing(false);
+        }
     }
 
     public static void clear() {
+        for (UUID key : locationMap.keySet()) {
+            Player player = Bukkit.getPlayer(key);
+            if (player != null) {
+                player.setGlowing(false);
+            }
+        }
         locationMap.clear();
     }
 
