@@ -18,6 +18,7 @@ public final class FollowingExplosion extends JavaPlugin {
 
         Objects.requireNonNull(getCommand(CommandConst.MAIN_COMMAND)).setExecutor(new CommandHandler());
         Objects.requireNonNull(getCommand(CommandConst.MAIN_COMMAND)).setTabCompleter(new TabComplete());
+        getServer().getPluginManager().registerEvents(new LoginListener(), this);
     }
 
     @Override
