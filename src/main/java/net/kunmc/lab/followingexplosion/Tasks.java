@@ -19,6 +19,9 @@ class Tasks extends BukkitRunnable {
 
     @Override
     public void run() {
+        if (!Config.gameRunFlag)
+            return;
+
         explosionTick++;
         if (Config.gameMode.equals("random"))
             randomTick++;

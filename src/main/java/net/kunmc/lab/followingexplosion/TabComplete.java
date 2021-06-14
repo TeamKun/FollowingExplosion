@@ -36,22 +36,24 @@ public class TabComplete implements TabCompleter {
                 } else if (args[0].equals(CommandConst.COMMAND_MODE)) {
                     completions.add(CommandConst.MODE_RANDOM);
                     completions.add(CommandConst.MODE_ASSIGN);
+                    completions.add(CommandConst.MODE_RESUME);
+                    completions.add(CommandConst.MODE_STOP);
                 } else {
                     if (args[0].equals(CommandConst.COMMAND_PLAYER_SET)) {
                         completions.addAll(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList()));
                         completions.removeIf(p -> LocationMap.containsKey(Objects.requireNonNull(Bukkit.getPlayer(p)).getUniqueId()));
                         completions.add(0, "@r");
                     } else {
-                        for (UUID key: LocationMap.keySet()){
+                        for (UUID key : LocationMap.keySet()) {
                             completions.add(Objects.requireNonNull(Bukkit.getPlayer(key)).getName());
                         }
                     }
                     completions.add(0, "@a");
-
                 }
                 break;
             case 3:
-                completions.add("<number>");
+                if (args[0].equals(CommandConst.COMMAND_CONFIG) && !args[1].equals(CommandConst.CONFIG_DISPLAY))
+                    completions.add("<number>");
                 break;
         }
         return completions;

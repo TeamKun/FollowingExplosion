@@ -96,18 +96,30 @@ public class CommandHandler implements CommandExecutor {
                 break;
 
             case CommandConst.COMMAND_MODE:
-                LocationMap.clear();
-                task.resetRandomTick();
                 switch (args[1]) {
                     case CommandConst.MODE_RANDOM:
+                        LocationMap.clear();
+                        task.resetRandomTick();
                         Config.gameMode = CommandConst.MODE_RANDOM;
                         task.setRandomTick(Config.randomInterval);
                         sender.sendMessage("ランダムモードに設定しました。");
                         break;
 
                     case CommandConst.MODE_ASSIGN:
+                        LocationMap.clear();
+                        task.resetRandomTick();
                         Config.gameMode = CommandConst.MODE_ASSIGN;
                         sender.sendMessage("プレイヤー指定モードに設定しました。");
+                        break;
+
+                    case CommandConst.MODE_RESUME:
+                        Config.gameRunFlag = true;
+                        sender.sendMessage("プラグインの実行を再開しました。");
+                        break;
+
+                    case CommandConst.MODE_STOP:
+                        Config.gameRunFlag = false;
+                        sender.sendMessage("プラグインの実行を中断しました。");
                         break;
 
                     default:
@@ -126,6 +138,7 @@ public class CommandHandler implements CommandExecutor {
                                 playerList.add(player.getName());
                             }
                         }
+                        sender.sendMessage("プラグイン実行状況：" + (Config.gameRunFlag ? "実行中" : "停止中"));
                         sender.sendMessage("対象プレイヤー：" + playerList.stream().sorted(Comparator.naturalOrder()).collect(Collectors.joining(",")));
                         sender.sendMessage("爆発範囲：" + Config.explosionPower);
                         sender.sendMessage("爆発間隔：" + Config.explosionInterval + "Tick");

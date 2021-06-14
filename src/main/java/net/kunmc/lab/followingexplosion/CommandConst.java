@@ -12,6 +12,8 @@ public class CommandConst {
     //第2引数　COMMAND_MODE
     public final static String MODE_RANDOM = "random";
     public final static String MODE_ASSIGN = "assign";
+    public final static String MODE_RESUME = "resume";
+    public final static String MODE_STOP = "stop";
 
     //第2引数　COMMAND_CONFIG
     public final static String CONFIG_DISPLAY = "display";
