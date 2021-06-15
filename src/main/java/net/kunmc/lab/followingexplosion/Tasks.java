@@ -57,19 +57,15 @@ class Tasks extends BukkitRunnable {
 
         //爆発処理
         if(explosionTick >= Config.explosionInterval) {
-            playerList = new ArrayList<>();
             for (UUID key : LocationMap.keySet()) {
                 Player player = Bukkit.getPlayer(key);
                 Location location = LocationMap.get(key, Config.locationInterval);
                 if (player != null) {
                     if (location != null && player.isOnline()) {
                         location.createExplosion(Config.explosionPower);
-                        playerList.add(player.getName());
                     }
                 }
             }
-            if (playerList.size() > 0)
-                getLogger().info("爆発しました。　プレイヤー：" + playerList.stream().sorted(Comparator.naturalOrder()).collect(Collectors.joining(",")));
             explosionTick = 0L;
         }
     }
